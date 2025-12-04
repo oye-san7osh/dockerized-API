@@ -10,7 +10,6 @@ from fvb_student.paginations import StudentPagination
 
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
-
 def StudentListCreate(request):
     
     if request.method == "GET":
@@ -46,3 +45,32 @@ def StudentListCreate(request):
     
     
 
+@api_view(["GET", "PUT", "DELETE"])
+@permission_classes(["AllowAny"])
+def StudentDetailUpdateDelete(request, slug):
+    
+    try:
+        student = StudentModel.objects.get(slug=slug)
+    except StudentModel.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "GET":
+        
+        serializer = StudentSerializer(student)
+        return Response(serializer.data)
+    
+    if request.method == "PUT":
+        
+        serializer = StudentSerializer(student, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    if request.method == "DELETE":
+        
+        student.delete()
+        return Response(status=status.HTTP_404_NO_CONTENT)
+    
+        
