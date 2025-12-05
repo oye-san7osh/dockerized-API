@@ -6,6 +6,7 @@ from fvb_student.models import StudentModel
 from fvb_student.serializers import StudentSerializer
 from fvb_student.paginations import StudentPagination
 from fvb_student.filters import StudentFilter
+from django.db.model import Q
 
 
 @api_view(["GET", "POST"])
@@ -25,6 +26,25 @@ def StudentListCreate(request):
         
         filtered_student = StudentFilter(request.GET, queryset=students).qs
         
+        search = request.query_params.get("search")
+        if search:
+            filtered_student = filtered_student.filter(
+                Q(st_full_name__icontains=search) |
+                Q(st_roll__icontains=search) |
+                Q(father_name__icontains=search) |
+                Q(mother_name__icontains=search) |
+                Q(address__icontains=search) |
+                Q(email__icontains=search) |
+                Q(st_faculty__icontains=search)
+                )
+        
+        
+        ordering = request.query_params.get("ordering")
+        if ordering:
+            filtered_student = filtered_student.order_by(ordering)
+            
+            
+            
         paginator = StudentPagination()
         result_page_st = paginator.paginate_queryset(filtered_student, request)
         
