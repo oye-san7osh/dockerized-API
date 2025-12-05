@@ -5,7 +5,7 @@ from rest_framework import status
 from fvb_student.models import StudentModel
 from fvb_student.serializers import StudentSerializer
 from fvb_student.paginations import StudentPagination
-
+from fvb_student.filters import StudentFilter
 
 
 @api_view(["GET", "POST"])
@@ -23,8 +23,10 @@ def StudentListCreate(request):
         # with pagination
         students = StudentModel.objects.all()
         
+        filtered_student = StudentFilter(request.GET, queryset=students).qs
+        
         paginator = StudentPagination()
-        result_page_st = paginator.paginate_queryset(students, request)
+        result_page_st = paginator.paginate_queryset(filtered_student, request)
         
         serializer = StudentSerializer(result_page_st, many=True)
         return paginator.get_paginated_response(serializer.data)
@@ -46,11 +48,11 @@ def StudentListCreate(request):
     
 
 @api_view(["GET", "PUT", "DELETE"])
-@permission_classes(["AllowAny"])
-def StudentDetailUpdateDelete(request, slug):
+@permission_classes([AllowAny])
+def StudentDetailUpdateDelete(request, pk):
     
     try:
-        student = StudentModel.objects.get(slug=slug)
+        student = StudentModel.objects.get(pk=pk)
     except StudentModel.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
