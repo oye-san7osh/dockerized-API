@@ -6,7 +6,7 @@ from fvb_student.models import StudentModel
 from fvb_student.serializers import StudentSerializer
 from fvb_student.paginations import StudentPagination
 from fvb_student.filters import StudentFilter
-from django.db.model import Q
+from django.db.models import Q
 
 
 @api_view(["GET", "POST"])
