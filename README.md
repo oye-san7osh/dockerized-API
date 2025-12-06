@@ -12,7 +12,7 @@ A simple and clean REST API built using **Django** and **Django REST Framework(D
 - Gender
 - Slug-based Retrieval
 
-This project is beginner-friendly and demonstrates how to build CRUD APIs with **DRF, pagination, filtering, and slug-based URLs.**
+This project is beginner-friendly and demonstrates how to build CRUD APIs with **DRF, pagination, filtering, and slug-based URLs.** & totally based on Function Based Views.
 
 ---
 
